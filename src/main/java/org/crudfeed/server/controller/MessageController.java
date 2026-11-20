@@ -25,8 +25,7 @@ public class MessageController {
     @PostMapping("/writeMessage")
     public String writeMessage(@RequestBody WriteMessageRequestDto dto) {
         try {
-            messageService.sendMessage(dto.senderId(), dto.receiverId(), dto.content());
-            return "Successfully sent!";
+            return messageService.sendMessage(dto.senderId(), dto.receiverId(), dto.content());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -45,8 +44,7 @@ public class MessageController {
     @PostMapping("/editMessage")
     public String editMessage(EditMessageRequestDto dto) {
         try {
-            messageService.editMessage(dto.messageId(), dto.content(), dto.senderId());
-            return "Successfully edited!";
+            return messageService.editMessage(dto.messageId(), dto.content(), dto.senderId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -55,8 +53,7 @@ public class MessageController {
     @PostMapping("/deleteMessage")
     public String deleteMessage(@RequestBody DeleteMessageRequestDto dto) {
         try {
-            messageService.deleteMessage(dto.messageId(), dto.senderId());
-            return "Successfully deleted!";
+            return messageService.deleteMessage(dto.messageId(), dto.senderId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

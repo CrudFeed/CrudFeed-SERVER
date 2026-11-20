@@ -22,8 +22,7 @@ public class PostController {
     @PostMapping("/createPost")
     public String createPost(@RequestBody CreatePostRequestDto dto) {
         try {
-            postService.createPost(dto.userId(), dto.content());
-            return "Post created successfully!";
+            return postService.createPost(dto.userId(), dto.content());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -32,8 +31,7 @@ public class PostController {
     @PostMapping("/editPost")
     public String editPost(@RequestBody EditPostRequestDto dto) {
         try {
-            postService.editPost(dto.postId(), dto.content(), dto.userId());
-            return "Successfully edited!";
+            return postService.editPost(dto.postId(), dto.content(), dto.userId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -42,8 +40,7 @@ public class PostController {
     @PostMapping("/deletePost")
     public String deletePost(@RequestBody PostRequestDto dto) {
         try {
-            postService.deletePost(dto.postId(), dto.userId());
-            return "Successfully deleted!";
+            return postService.deletePost(dto.postId(), dto.userId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -54,47 +51,48 @@ public class PostController {
         return postService.viewFeed();
     }
 
-    @PostMapping("/showUserPostsById")
-    public List<Post> showUserPostsById(@RequestBody AccountIdRequestDto dto) {
-        try {
-            return postService.showUserPostsById(dto.userId());
-        } catch (Exception e) {
-            return null;
-        }
-    }
+// TODO: REWORK POST CONTROLLER
 
-    @PostMapping("/viewUserLikes")
-    public List<Post> viewUserLikes(@RequestBody AccountIdRequestDto dto) {
-        try {
-            return postService.showUserLikes(dto.userId());
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    @PostMapping("/searchPostById")
-    public Post searchPostById(@RequestBody PostIdRequestDto dto) {
-        try {
-            return postService.searchPostById(dto.postId());
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    @PostMapping("/searchPostByWords")
-    public List<Post> searchPostByWords(@RequestBody PostContentRequestDto dto) {
-        try {
-            return postService.searchPostByWords(dto.content());
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    @PostMapping("/showUserPostsById")
+//    public List<Post> showUserPostsById(@RequestBody AccountIdRequestDto dto) {
+//        try {
+//            return postService.showUserPostsById(dto.userId());
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
+//
+//    @PostMapping("/viewUserLikes")
+//    public List<Post> viewUserLikes(@RequestBody AccountIdRequestDto dto) {
+//        try {
+//            return postService.showUserLikes(dto.userId());
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
+//
+//    @PostMapping("/searchPostById")
+//    public Post searchPostById(@RequestBody PostIdRequestDto dto) {
+//        try {
+//            return postService.searchPostById(dto.postId());
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
+//
+//    @PostMapping("/searchPostByWords")
+//    public List<Post> searchPostByWords(@RequestBody PostContentRequestDto dto) {
+//        try {
+//            return postService.searchPostByWords(dto.content());
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
     @PostMapping("/likePost")
     public String likePost(@RequestBody PostRequestDto dto) {
         try {
-            postService.likePost(dto.postId(), dto.userId());
-            return "Successfully liked!";
+            return postService.likePost(dto.postId(), dto.userId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -103,8 +101,7 @@ public class PostController {
     @PostMapping("/dislikePost")
     public String dislikePost(@RequestBody PostRequestDto dto) {
         try {
-            postService.dislikePost(dto.postId(), dto.userId());
-            return "Successfully disliked!";
+            return postService.dislikePost(dto.postId(), dto.userId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

@@ -36,8 +36,7 @@ public class UserController {
     @PostMapping("/subscribe")
     public String subscribe(@RequestBody SubscribeRequestDto dto) {
         try {
-            userService.subscribe(dto.userId(), dto.nickname());
-            return "Successfully subscribed!";
+            return userService.subscribe(dto.userId(), dto.nickname());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -46,8 +45,7 @@ public class UserController {
     @PostMapping("/unsubscribe")
     public String unsubscribe(@RequestBody SubscribeRequestDto dto) {
         try {
-            userService.unsubscribe(dto.userId(), dto.nickname());
-            return "Successfully unsubscribed!";
+            return userService.unsubscribe(dto.userId(), dto.nickname());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -65,8 +63,7 @@ public class UserController {
     @PostMapping("/editAccountPage")
     public String editAccountPage(@RequestBody EditAccountPageRequestDto dto) {
         try {
-            userService.editAccountPage(dto.userId(), dto.content());
-            return "Successfully changed!";
+            return userService.editAccountPage(dto.userId(), dto.content());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -75,8 +72,7 @@ public class UserController {
     @PostMapping("/changeNickname")
     public String changeNickname(@RequestBody ChangeNicknameRequestDto dto) {
         try {
-            userService.changeName(dto.nickname(), dto.userId());
-            return "Successfully changed!";
+            return userService.changeName(dto.nickname(), dto.userId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -85,8 +81,7 @@ public class UserController {
     @PostMapping("/changePassword")
     public String changePassword(@RequestBody ChangePasswordRequestDto dto) {
         try {
-            userService.changePass(dto.password(), dto.userId());
-            return "Successfully changed!";
+            return userService.changePass(dto.password(), dto.userId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -95,8 +90,7 @@ public class UserController {
     @PostMapping("/deleteAccount")
     public String deleteAccount(@RequestBody AccountIdRequestDto dto) {
         try {
-            userService.deleteAccount("y", dto.userId());
-            return "Successfully deleted!";
+            return userService.deleteAccount("y", dto.userId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
