@@ -44,7 +44,7 @@ public class PostController {
     }
 
     @GetMapping("/viewFeed")
-    public List<Post> viewFeed() {
+    public List<ViewFeedRequestDto> viewFeed() {
         return postService.viewFeed();
     }
 
