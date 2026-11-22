@@ -4,12 +4,10 @@ import org.crudfeed.core.dto.*;
 import org.crudfeed.core.entity.Message;
 import org.crudfeed.core.service.MessageService;
 import org.crudfeed.core.service.UserService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Transactional
 @RestController
 @RequestMapping("/api")
 public class MessageController {

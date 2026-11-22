@@ -1,14 +1,11 @@
 package org.crudfeed.server.controller;
 
 import org.crudfeed.core.dto.*;
-import org.crudfeed.core.entity.Post;
 import org.crudfeed.core.service.PostService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Transactional
 @RestController
 @RequestMapping("/api")
 public class PostController {
