@@ -104,4 +104,22 @@ public class UserController {
             return "Error: " + e.getMessage();
         }
     }
+
+    @PostMapping("/modBanAccount")
+    public String modBanAccount(@RequestBody long userId) {
+        try {
+            return userService.modBanAccount(userId);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+    @PostMapping("/modUnbanAccount")
+    public String modUnbanAccount(@RequestBody long userId) {
+        try {
+            return userService.modUnbanAccount(userId);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
 }
