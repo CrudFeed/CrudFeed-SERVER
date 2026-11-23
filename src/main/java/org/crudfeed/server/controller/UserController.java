@@ -1,7 +1,6 @@
 package org.crudfeed.server.controller;
 
 import org.crudfeed.core.dto.*;
-import org.crudfeed.core.entity.User;
 import org.crudfeed.core.service.AuthService;
 import org.crudfeed.core.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -111,17 +110,17 @@ public class UserController {
     }
 
     @PostMapping("/modBanAccount")
-    public String modBanAccount(@RequestBody long userId) {
+    public String modBanAccount(@RequestBody ModBanAccountDtoRequest dto) {
         try {
-            return userService.modBanAccount(userId);
+            return userService.modBanAccount(dto.modId(), dto.targetId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
     @PostMapping("/modUnbanAccount")
-    public String modUnbanAccount(@RequestBody long userId) {
+    public String modUnbanAccount(@RequestBody ModUnbanAccountDtoRequest dto) {
         try {
-            return userService.modUnbanAccount(userId);
+            return userService.modUnbanAccount(dto.modId(), dto.targetId());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
