@@ -92,9 +92,9 @@ public class UserController {
     }
 
     @PostMapping("/deleteAccount")
-    public String deleteAccount(@RequestBody AccountIdRequestDto dto) {
+    public String deleteAccount(@RequestBody DeleteAccountRequestDto dto) {
         try {
-            return userService.deleteAccount("y", dto.userId());
+            return userService.deleteAccount("y", dto.userId(), dto.email(), dto.nickname());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
