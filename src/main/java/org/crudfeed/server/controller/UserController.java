@@ -108,22 +108,4 @@ public class UserController {
             return "Error: " + e.getMessage();
         }
     }
-
-    @PostMapping("/modBanAccount")
-    public String modBanAccount(@RequestBody ModBanAccountDtoRequest dto) {
-        try {
-            return userService.modBanAccount(dto.modId(), dto.targetId());
-        } catch (Exception e) {
-            return "Error: " + e.getMessage();
-        }
-    }
-    @PostMapping("/modUnbanAccount")
-    public String modUnbanAccount(@RequestBody ModUnbanAccountDtoRequest dto) {
-        try {
-            return userService.modUnbanAccount(dto.modId(), dto.targetId());
-        } catch (Exception e) {
-            return "Error: " + e.getMessage();
-        }
-    }
-
 }
