@@ -23,7 +23,8 @@ public class MessageController {
     @PostMapping("/writeMessage")
     public String writeMessage(@RequestBody WriteMessageRequestDto dto) {
         try {
-            return messageService.sendMessage(dto.senderId(), dto.receiverId(), dto.content());
+            long receiverId = userService.getUserId(dto.receiverNickname());
+            return messageService.sendMessage(dto.senderId(), receiverId, dto.content());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
