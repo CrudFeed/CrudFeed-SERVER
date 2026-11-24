@@ -5,6 +5,8 @@ import org.crudfeed.core.service.AuthService;
 import org.crudfeed.core.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -53,6 +55,29 @@ public class UserController {
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
+    }
+
+    @PostMapping("/addFriend")
+    public String addFriend(@RequestBody FriendRequestDto dto) {
+        try {
+            return userService.addOrRemoveFriend(dto.userId(), dto.friendName(), "add");
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @PostMapping("/removeFriend")
+    public String removeFriend(@RequestBody FriendRequestDto dto) {
+        try {
+            return userService.addOrRemoveFriend(dto.userId(), dto.friendName(), "remove");
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @PostMapping("/showFriendsList")
+    public List<ShowFriendsListRequestDto> showFriendsList(@RequestBody ShowFriendsListRequestDto dto) {
+        return userService.showFriendsList(dto.userId());
     }
 
     @PostMapping("/viewAccountPage")
