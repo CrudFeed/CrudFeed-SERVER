@@ -18,17 +18,17 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public AuthResultDto signUp(@RequestBody SignUpRequestDto dto) {
+    public AuthResultResponseDto signUp(@RequestBody SignUpRequestDto dto) {
         return authService.signUp(dto.email(), dto.nickname(), dto.displayName(), dto.password());
     }
 
     @PostMapping("/sign-in")
-    public AuthResultDto signIn(@RequestBody SignInRequestDto dto) {
+    public AuthResultResponseDto signIn(@RequestBody SignInRequestDto dto) {
         return authService.signIn(dto.email(), dto.password());
     }
 
     @PostMapping("/getBanned")
-    public GetBannedDtoRequest getBanned(@RequestBody GetBannedDtoRequest dto) {
+    public GetBannedRequestDto getBanned(@RequestBody GetBannedRequestDto dto) {
         return userService.getBanned(dto.userId());
     }
 
