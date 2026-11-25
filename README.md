@@ -1,13 +1,8 @@
-<table align="center">
-  <tr>
-    <td align="center">
-      <img width="100" height="100" alt="Image" src="https://github.com/user-attachments/assets/7607ccf0-92f6-4408-9c79-d774413c3c7a" /><br>
-      <sub><b>CrudFeed Server</b></sub>
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <img width="120" height="120" alt="CrudFeed" src="https://github.com/user-attachments/assets/7607ccf0-92f6-4408-9c79-d774413c3c7a">
+</p>
 
-<br>
+<h1 align="center">CrudFeed Server</h1>
 
 <p align="center">
   Request dispatcher and orchestrator for CrudFeed ecosystem.<br>
@@ -18,26 +13,17 @@
 
 <p align="center">
   <a href="https://github.com/CrudFeed/CrudFeed-CORE"><img src="https://img.shields.io/badge/Dependency-CrudFeed_Core-brightgreen?style=for-the-badge&logo=git&logoColor=white" alt="Core Version"><a>
-  <img src="https://img.shields.io/badge/Version-1.0-blue?style=for-the-badge&logo=git&logoColor=white" alt="CLI Version">
-</p>
-
-<p align="center">
-  <sub>🔌 Bridge between CLI (in the future WEB) clients and Core domain logic.</sub>
+  <img src="https://img.shields.io/badge/Version-2.0-blue?style=for-the-badge&logo=git&logoColor=white" alt="CLI Version">
 </p>
 
 <br>
 
 <p align="center">
-  <font size="7"><b>Powered by</b></font>
-</p>
-
-<p align="center">
-  <img width="40" src="https://img.shields.io/badge/%20-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java">
-  <img width="40" src="https://img.shields.io/badge/%20-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
-  <img width="40" src="https://img.shields.io/badge/%20-59666C?style=flat-square&logo=hibernate&logoColor=white" alt="Hibernate">
-  <img width="40" src="https://img.shields.io/badge/%20-C71A36?style=flat-square&logo=apachemaven&logoColor=white" alt="Maven">
-  <img width="40" src="https://img.shields.io/badge/%20-000000?style=flat-square&logo=intellijidea&logoColor=white" alt="IDEA">
-  <img width="40" src="https://img.shields.io/badge/%20-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux">
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white" alt="Java">
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white" alt="Spring Boot">
+  <img src="https://img.shields.io/badge/Maven-C71A36?style=flat-square&logo=apachemaven&logoColor=white" alt="Maven">
+  <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=flat-square&logo=intellijidea&logoColor=white" alt="IntelliJ IDEA">
+  <img src="https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black" alt="Linux">
 </p>
 
 ---
@@ -46,32 +32,46 @@
 
 The Server is a stateless request dispatcher:
 
-- **SSL/TLS Server** — Listens on port 7777, encrypts all traffic
-- **Virtual Threads** — Each client connection handled by lightweight thread
-- **Command Parsing** — Deserializes pipe-delimited UTF-8 commands
-- **Service Routing** — Calls appropriate Core services based on command
-- **Response Mapping** — Formats service results back to client-friendly format
-- **Connection Management** — Handles client connect/disconnect gracefully
+- **Spring Boot Server** — Exposes server endpoints and delegates business operations to `CORE`
+- **Command Parsing** — Deserializes incoming requests and payloads into `CORE` DTOs
+- **Service Routing** — Routes requests to `CORE` services (`Auth`, `Message`, `Mod`, `Post`, `User`)
+- **Response Mapping** — Maps `CORE` results and DTOs into client-ready responses
+- **Connection & Session Handling** — Manages client connections, sessions, and clean disconnects
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-    CLI / (Web in the future) Client
-              │
-              ▼ (SSL/TLS Connection)
-       CrudFeed Server (localhost:7777)
-              │
-      ┌───────┴───────┐
-      ▼               ▼
-Command Parser  Response Mappers (formats data for CLI UI)
-      │
-      ▼
-CrudFeed Core (Services, Repositories, Entities)
-      │
-      ▼
-  PostgreSQL
+              ┌────────┐
+              │ Client │
+              └───┬────┘
+                  │
+                  ▼
+              ┌────────┐
+              │ Server │
+              └───┬────┘
+                  │
+                  ▼
+            ┌─────────────┐
+            │ Controllers │
+            └──────┬──────┘
+                   │
+                   ▼
+             ┌───────────┐
+             │   Core    │
+             └─────┬─────┘
+                   │
+          ┌────────┴────────┐
+          ▼                 ▼
+   ┌────────────┐    ┌──────────┐
+   │ PostgreSQL │    │ Response │
+   └────────────┘    └────┬─────┘
+                          │
+                          ▼
+                     ┌────────┐
+                     │ Client │
+                     └────────┘
 
 ```
 
@@ -102,8 +102,6 @@ Run the server:
 java -jar target/"name_of_java_jar_file".jar
 ```
 
-Server will start listening on `localhost:7777` with SSL/TLS.
-
 ---
 
 ## 📂 Module Structure
@@ -121,52 +119,19 @@ server/src/main/java/org/crudfeed/server/
 
 ---
 
-## 🔒 Protocol
-
-**Command Format:** `COMMAND|arg1|arg2|...`
-
-Examples:
-
-```
-
-signUp|username|password
-signIn|username|password
-createPost|userId|postContent
-writeMessage|senderId|receiverUsername|messageText
-viewFeed
-likePost|userId|postId
-Exit
-
-```
-
-**Response Format:** UTF-8 strings
-
-```
-
-SUCCESS|data
-Error! Message here
-
-```
-
----
-
 ## 💡 Design Principles
 
-- **Stateless** — Each request is independent, no session state in Server
-- **Single Responsibility** — Server routes, Mappers format, Core handles logic
-- **Non-Blocking** — Virtual threads handle concurrent clients efficiently
-- **Secure** — SSL/TLS for all traffic, passwords never logged
-- **Simple Protocol** — Pipe-delimited strings, easy to parse and test
-- **Core Agnostic** — Server doesn't know about entities, just passes data
+- **Single Responsibility** — Spring handles routing, Mappers shape responses, Core runs domain logic and data access
+- **Core Agnostic** — Server stays decoupled from internal entities and passes DTOs/data across boundaries
 
 ---
 
 ## 🚧 Status
 
-Active development. Stable request routing, mapper improvements ongoing.
+Active development.
 
 ---
 
 ## 📄 License
 
-Same as parent CrudFeed organization.
+This project is licensed under the GNU General Public License v3.0 — see the [LICENSE](LICENSE) file for details.
