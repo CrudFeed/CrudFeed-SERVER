@@ -1,6 +1,10 @@
 package org.crudfeed.server.controller;
 
-import org.crudfeed.core.dto.*;
+import org.crudfeed.core.dto.account.*;
+import org.crudfeed.core.dto.account.AuthResultResponseDto;
+import org.crudfeed.core.dto.account.SignInRequestDto;
+import org.crudfeed.core.dto.account.SignUpRequestDto;
+import org.crudfeed.core.dto.account.FriendRequestDto;
 import org.crudfeed.core.service.AuthService;
 import org.crudfeed.core.service.UserService;
 import org.springframework.web.bind.annotation.*;

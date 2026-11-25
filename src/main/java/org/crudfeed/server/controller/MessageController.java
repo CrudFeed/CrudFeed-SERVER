@@ -1,6 +1,9 @@
 package org.crudfeed.server.controller;
 
-import org.crudfeed.core.dto.*;
+import org.crudfeed.core.dto.message.ViewMessagesRequestDto;
+import org.crudfeed.core.dto.message.DeleteMessageRequestDto;
+import org.crudfeed.core.dto.message.EditMessageRequestDto;
+import org.crudfeed.core.dto.message.WriteMessageRequestDto;
 import org.crudfeed.core.entity.Message;
 import org.crudfeed.core.service.MessageService;
 import org.crudfeed.core.service.UserService;

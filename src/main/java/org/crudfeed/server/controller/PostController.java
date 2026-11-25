@@ -1,6 +1,7 @@
 package org.crudfeed.server.controller;
 
-import org.crudfeed.core.dto.*;
+import org.crudfeed.core.dto.account.AccountIdRequestDto;
+import org.crudfeed.core.dto.post.*;
 import org.crudfeed.core.service.PostService;
 import org.springframework.web.bind.annotation.*;
 
