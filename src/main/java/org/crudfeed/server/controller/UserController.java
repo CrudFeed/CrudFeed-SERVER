@@ -145,6 +145,18 @@ public class UserController {
         }
     }
 
+    @PostMapping("/changeEmail")
+    public String changeEmail(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody ChangeEmailRequestDto dto) {
+        try {
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.changeEmail(dto.email(), userId);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
     @PostMapping("/changeNickname")
     public String changeNickname(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
