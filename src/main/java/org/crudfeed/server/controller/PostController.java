@@ -1,10 +1,10 @@
 package org.crudfeed.server.controller;
 
-import org.crudfeed.core.dto.account.AccountIdRequestDto;
 import org.crudfeed.core.dto.post.*;
 import org.crudfeed.core.service.PostService;
+import org.crudfeed.server.security.TokenStore;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -12,33 +12,44 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final TokenStore tokenStore;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, TokenStore tokenStore) {
         this.postService = postService;
+        this.tokenStore = tokenStore;
     }
 
     @PostMapping("/createPost")
-    public String createPost(@RequestBody CreatePostRequestDto dto) {
+    public String createPost(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody CreatePostRequestDto dto) {
         try {
-            return postService.createPost(dto.userId(), dto.content());
+            long userId = tokenStore.requireUserId(authHeader);
+            return postService.createPost(userId, dto.content());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/editPost")
-    public String editPost(@RequestBody EditPostRequestDto dto) {
+    public String editPost(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody EditPostRequestDto dto) {
         try {
-            return postService.editPost(dto.postId(), dto.content(), dto.userId());
+            long userId = tokenStore.requireUserId(authHeader);
+            return postService.editPost(dto.postId(), dto.content(), userId);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/deletePost")
-    public String deletePost(@RequestBody PostRequestDto dto) {
+    public String deletePost(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody PostRequestDto dto) {
         try {
-            return postService.deletePost(dto.postId(), dto.userId());
+            long userId = tokenStore.requireUserId(authHeader);
+            return postService.deletePost(dto.postId(), userId);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -50,9 +61,11 @@ public class PostController {
     }
 
     @PostMapping("/showUserPostsById")
-    public List<ViewPostRequestDto> showUserPostsById(@RequestBody AccountIdRequestDto dto) {
+    public List<ViewPostRequestDto> showUserPostsById(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader) {
         try {
-            return postService.showUserPostsById(dto.userId());
+            long userId = tokenStore.requireUserId(authHeader);
+            return postService.showUserPostsById(userId);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -60,9 +73,11 @@ public class PostController {
     }
 
     @PostMapping("/viewUserLikes")
-    public List<ViewPostRequestDto> viewUserLikes(@RequestBody AccountIdRequestDto dto) {
+    public List<ViewPostRequestDto> viewUserLikes(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION,  required = false) String authHeader) {
         try {
-            return postService.showUserLikes(dto.userId());
+            long userId = tokenStore.getUserId(authHeader);
+            return postService.showUserLikes(userId);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -90,18 +105,24 @@ public class PostController {
     }
 
     @PostMapping("/likePost")
-    public String likePost(@RequestBody PostRequestDto dto) {
+    public String likePost(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody PostRequestDto dto) {
         try {
-            return postService.likePost(dto.postId(), dto.userId());
+            long userId = tokenStore.requireUserId(authHeader);
+            return postService.likePost(dto.postId(), userId);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/dislikePost")
-    public String dislikePost(@RequestBody PostRequestDto dto) {
+    public String dislikePost(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody PostRequestDto dto) {
         try {
-            return postService.dislikePost(dto.postId(), dto.userId());
+            long userId = tokenStore.requireUserId(authHeader);
+            return postService.dislikePost(dto.postId(), userId);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

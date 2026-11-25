@@ -7,6 +7,10 @@ import org.crudfeed.core.dto.account.SignUpRequestDto;
 import org.crudfeed.core.dto.account.FriendRequestDto;
 import org.crudfeed.core.service.AuthService;
 import org.crudfeed.core.service.UserService;
+import org.crudfeed.server.security.TokenStore;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,24 +21,43 @@ public class UserController {
 
     private final AuthService authService;
     private final UserService userService;
+    private final TokenStore tokenStore;
 
-    public UserController(AuthService authService, UserService userService) {
+    public UserController(AuthService authService, UserService userService, TokenStore tokenStore) {
         this.authService = authService;
         this.userService = userService;
+        this.tokenStore = tokenStore;
     }
 
     @PostMapping("/signUp")
-    public AuthResultResponseDto signUp(@RequestBody SignUpRequestDto dto) {
-        return authService.signUp(dto.email(), dto.nickname(), dto.displayName(), dto.password());
+    public ResponseEntity<AuthResultResponseDto> signUp(@RequestBody SignUpRequestDto dto) {
+        AuthResultResponseDto result = authService.signUp(
+                dto.email(), dto.nickname(), dto.displayName(), dto.password()
+        );
+        if (!result.ok() || result.user() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+        return tokenResponse(result);
     }
 
     @PostMapping("/signIn")
-    public AuthResultResponseDto signIn(@RequestBody SignInRequestDto dto) {
-        return authService.signIn(dto.email(), dto.password());
+    public ResponseEntity<AuthResultResponseDto> signIn(@RequestBody SignInRequestDto dto) {
+        AuthResultResponseDto result = authService.signIn(dto.email(), dto.password());
+        if (!result.ok() || result.user() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+        }
+        return tokenResponse(result);
+    }
+
+    private ResponseEntity<AuthResultResponseDto> tokenResponse(AuthResultResponseDto result) {
+        String token = tokenStore.createToken(result.user().id());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .body(result);
     }
 
     @PostMapping("/getBanned")
-    public GetBannedRequestDto getBanned(@RequestBody GetBannedRequestDto dto) {
+    public GetBannedDto getBanned(@RequestBody GetBannedDto dto) {
         return userService.getBanned(dto.userId());
     }
 
@@ -44,48 +67,65 @@ public class UserController {
     }
 
     @PostMapping("/subscribe")
-    public String subscribe(@RequestBody SubscribeRequestDto dto) {
+    public String subscribe(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody SubscribeRequestDto dto
+    ) {
         try {
-            return userService.subscribe(dto.userId(), dto.nickname());
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.subscribe(userId, dto.nickname());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/unsubscribe")
-    public String unsubscribe(@RequestBody SubscribeRequestDto dto) {
+    public String unsubscribe(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody SubscribeRequestDto dto
+    ) {
         try {
-            return userService.unsubscribe(dto.userId(), dto.nickname());
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.unsubscribe(userId, dto.nickname());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/addFriend")
-    public String addFriend(@RequestBody FriendRequestDto dto) {
+    public String addFriend(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody FriendRequestDto dto) {
         try {
-            return userService.addOrRemoveFriend(dto.userId(), dto.friendName(), "add");
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.addOrRemoveFriend(userId, dto.friendName(), "add");
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/removeFriend")
-    public String removeFriend(@RequestBody FriendRequestDto dto) {
+    public String removeFriend(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody FriendRequestDto dto) {
         try {
-            return userService.addOrRemoveFriend(dto.userId(), dto.friendName(), "remove");
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.addOrRemoveFriend(userId, dto.friendName(), "remove");
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/showFriendsList")
-    public List<ShowFriendsListRequestDto> showFriendsList(@RequestBody ShowFriendsListRequestDto dto) {
-        return userService.showFriendsList(dto.userId());
+    public List<ShowFriendsListDto> showFriendsList(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader) {
+
+        long userId = tokenStore.requireUserId(authHeader);
+        return userService.showFriendsList(userId);
     }
 
     @PostMapping("/viewAccountPage")
-    public Object viewAccountPage(@RequestBody ViewAccountPageRequestDto dto) {
+    public Object viewAccountPage(@RequestBody ViewAccountPageDto dto) {
         try {
             return userService.viewAccountPage(dto.nickname());
         } catch (Exception e) {
@@ -94,36 +134,48 @@ public class UserController {
     }
 
     @PostMapping("/editAccountPage")
-    public String editAccountPage(@RequestBody EditAccountPageRequestDto dto) {
+    public String editAccountPage(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody EditAccountPageRequestDto dto) {
         try {
-            return userService.editAccountPage(dto.userId(), dto.content());
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.editAccountPage(userId, dto.content());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/changeNickname")
-    public String changeNickname(@RequestBody ChangeNicknameRequestDto dto) {
+    public String changeNickname(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody ChangeNicknameRequestDto dto) {
         try {
-            return userService.changeName(dto.nickname(), dto.userId());
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.changeName(dto.nickname(), userId);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(@RequestBody ChangePasswordRequestDto dto) {
+    public String changePassword(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody ChangePasswordRequestDto dto) {
         try {
-            return userService.changePass(dto.password(), dto.userId());
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.changePass(dto.password(), userId);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
     @PostMapping("/deleteAccount")
-    public String deleteAccount(@RequestBody DeleteAccountRequestDto dto) {
+    public String deleteAccount(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody DeleteAccountRequestDto dto) {
         try {
-            return userService.deleteAccount("y", dto.userId(), dto.email(), dto.nickname());
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.deleteAccount("y", userId, dto.email(), dto.nickname());
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
