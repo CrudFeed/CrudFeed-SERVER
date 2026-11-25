@@ -19,12 +19,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/sign-up")
+    @PostMapping("/signUp")
     public AuthResultResponseDto signUp(@RequestBody SignUpRequestDto dto) {
         return authService.signUp(dto.email(), dto.nickname(), dto.displayName(), dto.password());
     }
 
-    @PostMapping("/sign-in")
+    @PostMapping("/signIn")
     public AuthResultResponseDto signIn(@RequestBody SignInRequestDto dto) {
         return authService.signIn(dto.email(), dto.password());
     }

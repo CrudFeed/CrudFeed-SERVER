@@ -44,47 +44,49 @@ public class PostController {
     }
 
     @GetMapping("/viewFeed")
-    public List<ViewFeedRequestDto> viewFeed() {
+    public List<ViewPostRequestDto> viewFeed() {
         return postService.viewFeed();
     }
 
-// TODO: REWORK POST CONTROLLER
+    @PostMapping("/showUserPostsById")
+    public List<ViewPostRequestDto> showUserPostsById(@RequestBody AccountIdRequestDto dto) {
+        try {
+            return postService.showUserPostsById(dto.userId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-//    @PostMapping("/showUserPostsById")
-//    public List<Post> showUserPostsById(@RequestBody AccountIdRequestDto dto) {
-//        try {
-//            return postService.showUserPostsById(dto.userId());
-//        } catch (Exception e) {
-//            return null;
-//        }
-//    }
-//
-//    @PostMapping("/viewUserLikes")
-//    public List<Post> viewUserLikes(@RequestBody AccountIdRequestDto dto) {
-//        try {
-//            return postService.showUserLikes(dto.userId());
-//        } catch (Exception e) {
-//            return null;
-//        }
-//    }
-//
-//    @PostMapping("/searchPostById")
-//    public Post searchPostById(@RequestBody PostIdRequestDto dto) {
-//        try {
-//            return postService.searchPostById(dto.postId());
-//        } catch (Exception e) {
-//            return null;
-//        }
-//    }
-//
-//    @PostMapping("/searchPostByWords")
-//    public List<Post> searchPostByWords(@RequestBody PostContentRequestDto dto) {
-//        try {
-//            return postService.searchPostByWords(dto.content());
-//        } catch (Exception e) {
-//            return null;
-//        }
-//    }
+    @PostMapping("/viewUserLikes")
+    public List<ViewPostRequestDto> viewUserLikes(@RequestBody AccountIdRequestDto dto) {
+        try {
+            return postService.showUserLikes(dto.userId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/searchPostById")
+    public ViewPostRequestDto searchPostById(@RequestBody PostIdRequestDto dto) {
+        try {
+            return postService.searchPostById(dto.postId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @PostMapping("/searchPostByWords")
+    public List<ViewPostRequestDto> searchPostByWords(@RequestBody PostContentRequestDto dto) {
+        try {
+            return postService.searchPostByWords(dto.content());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @PostMapping("/likePost")
     public String likePost(@RequestBody PostRequestDto dto) {
