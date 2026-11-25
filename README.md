@@ -107,13 +107,18 @@ java -jar target/"name_of_java_jar_file".jar
 ## 📂 Module Structure
 
 ```
-
-server/src/main/java/org/crudfeed/server/
-├── mapper/                        # Serializers formatting domain data into raw strings for CLI UI builders
-│   ├── AccountResponseMapper.java
-│   ├── MessageResponseMapper.java
-│   └── PostResponseMapper.java
-└── CrudFeedServer.java            # Main class (socket acceptor & virtual thread dispatcher)
+src/main/java/org/crudfeed/server/
+├── config/
+│   └── StartupBanner.java           ← Startup banner configuration
+├── controller/
+│   ├── HealthController.java        ← Health check endpoints
+│   ├── MessageController.java       ← Message endpoints
+│   ├── ModController.java           ← Moderation endpoints
+│   ├── PostController.java          ← Post endpoints
+│   └── UserController.java          ← User endpoints
+├── security/
+│   └── TokenStore.java              ← Token storage
+└── CrudFeedServer.java              ← Main entry point
 
 ```
 
