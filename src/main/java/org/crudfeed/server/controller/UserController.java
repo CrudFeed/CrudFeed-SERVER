@@ -148,10 +148,22 @@ public class UserController {
     @PostMapping("/changeNickname")
     public String changeNickname(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
-            @RequestBody ChangeNicknameRequestDto dto) {
+            @RequestBody ChangeNameRequestDto dto) {
         try {
             long userId = tokenStore.requireUserId(authHeader);
             return userService.changeName(dto.nickname(), userId);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @PostMapping("/changeDisplayName")
+    public String changeDisplayName(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authHeader,
+            @RequestBody ChangeNameRequestDto dto) {
+        try {
+            long userId = tokenStore.requireUserId(authHeader);
+            return userService.changeDisplayName(dto.nickname(), userId);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
